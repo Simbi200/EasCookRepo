@@ -1,0 +1,5 @@
+<root>
+    <item name='java.util.List boolean add(E)'>
+        <annotation name='org.jetbrains.annotations.Blocking' />
+    </item>
+</root>

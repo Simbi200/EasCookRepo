@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-<string name="app_name">EasCook</string>
+    <string name="app_name">EasCook</string>
+    <string-array name="numbers">
+        <item>One Serving</item>
+        <item>Two Servings</item>
+        <item>Three Servings</item>
+        <item>Four Servings</item>
+    </string-array>
+
 
 
 </resources>
