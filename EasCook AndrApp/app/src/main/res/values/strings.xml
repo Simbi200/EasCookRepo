@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">EasCook</string>
-    <string-array name="numbers">
+    <string-array name="riceAmount">
         <item>One Serving</item>
         <item>Two Servings</item>
         <item>Three Servings</item>
