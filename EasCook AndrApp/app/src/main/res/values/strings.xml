@@ -9,5 +9,16 @@
         <item>Four Servings</item>
     </string-array>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="settime">Set Time for rice to be ready\nand press start</string>
+    <string name="set_time">set time</string>
+    <string name="or_nstart_cooking_now">or\nstart cooking now</string>
+    <string name="start">start</string>
+    <string name="three">Three</string>
+    <string name="two">Two</string>
+    <string name="one">One</string>
+    <string name="select_portions_of_rice">Select portions of rice</string>
+
 
 </resources>
