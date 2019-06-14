@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,17 +26,19 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
 
+
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public Toolbar toolbar;
     public int portion;
     public int timeInSeconds;
     public Button timeButton;
-    public TextView setTimeText, fbtxt;
+    public TextView setTimeText, fbtxt, fbtxt2;
     public RadioGroup radioGroup;
-    public String timeString, hr, h1, mn, m1;
+    public String timeString, hr, h1, mn, m1, responce;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
-    private DatabaseReference mChildRef = mRootRef.child("message");
+    private DatabaseReference mChildRef = mRootRef.child("FireBaseTimeValue");
+    private DatabaseReference mChildRef2 = mRootRef.child("FireBasePortionValue");
 
 
     public MainActivity(){
@@ -55,14 +58,13 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         setContentView(R.layout.activity_main);
 
         fbtxt = findViewById(R.id.fbtxt_id);
+        fbtxt2 = findViewById(R.id.fbtxt2_id);
         toolbar = findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("EasCook");
         toolbar.setLogo(R.drawable.logo);
         fragmentManager = getSupportFragmentManager();
         //setTimeText = findViewById(R.id.selectedTimeRes_id);
-
-
 
 
         //add first fragment
@@ -91,6 +93,35 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }*/
         }
 
+
+    }
+
+    private void sendAmountData() {
+
+        mRootRef.child("myDb").child("awais@gmailcom").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                String mPortion = Integer.toString(portion);
+                String t = Integer.toString(timeInSeconds);
+
+                try {
+                    mRootRef.child("FireBaseTimeValue").setValue(t);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    mRootRef.child("FireBasePortionValue").setValue(mPortion);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("User", databaseError.getMessage());
+            }
+        });
     }
 
     protected void onStart() {
@@ -102,7 +133,20 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
                 String message = dataSnapshot.getValue(String.class);
                 fbtxt.setText(message);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+        mChildRef2.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String message = dataSnapshot.getValue(String.class);
+                fbtxt2.setText(message);
             }
 
             @Override
@@ -203,9 +247,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         portz = "portion"; if (portion>1){portz = portz+"s";}
         confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready at "+timeString; // create feedback message
-        Toast.makeText(this,confTxt, Toast.LENGTH_LONG).show(); //toast message
+        //Toast.makeText(this,confTxt, Toast.LENGTH_LONG).show(); //toast message
 
         setTimeText.setText(confTxt);// display message on screen
+        //sendAmountData();
 
+    }
+
+    public void startBtClicked(View view) {
+        sendAmountData();
     }
 }

@@ -34,7 +34,14 @@
         android:id="@+id/fbtxt_id"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="kkkkkkk"
+        android:text="m1"
+        android:textColor="#fff"
+        android:textSize="24sp"/>
+    <TextView
+        android:id="@+id/fbtxt2_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="m2"
         android:textColor="#fff"
         android:textSize="24sp"/>
 

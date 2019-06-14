@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "575887403353-2206k6esrpgs6hh0ajlkaaabkdrus9fk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "net.calc.eascook",
+            "certificate_hash": "038f3f7f2e5b05c38b27813275c129f8bf7143c5"
+          }
+        },
+        {
           "client_id": "575887403353-gehej7s0av25q7gt3i0f64echjkdnl2f.apps.googleusercontent.com",
           "client_type": 3
         }
