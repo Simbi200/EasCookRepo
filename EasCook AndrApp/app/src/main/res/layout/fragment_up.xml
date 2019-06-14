@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
     android:gravity="center"
     android:orientation="vertical"
+    android:weightSum="2"
     tools:context=".UpFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_weight="1"
         android:gravity="center"
         android:orientation="vertical">
 
@@ -23,6 +24,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:text="@string/select_portions_of_rice"
             android:textColor="#fff"
@@ -34,6 +36,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginBottom="20dp"
+            android:layout_weight="1"
             android:gravity="center"
             android:orientation="horizontal"
             android:theme="@style/ThemeOverlay.AppCompat.Dark">
@@ -67,58 +70,59 @@
 
         </RadioGroup>
 
+        <TextView
+            android:id="@+id/select_time_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="@string/settime"
+            android:textColor="#fff"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/timeButton_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_round"
+            android:gravity="center"
+            android:onClick="btClicked"
+            android:paddingHorizontal="30dp"
+            android:text="@string/set_time"
+            android:textColor="#fff"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/selectedTimeRes_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/or_nstart_cooking_now"
+            android:textColor="#fff"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/start_id"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:background="@drawable/btn_round"
+            android:gravity="center"
+            android:onClick="startBtClicked"
+            android:text="@string/start"
+            android:textColor="#fff"
+            android:textSize="24sp" />
+
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/select_time_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:text="@string/settime"
-        android:textColor="#fff"
-        android:textSize="24sp" />
-
-    <Button
-        android:id="@+id/timeButton_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/btn_round"
-        android:gravity="center"
-        android:onClick="btClicked"
-        android:paddingHorizontal="30dp"
-        android:text="@string/set_time"
-        android:textColor="#fff"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/selectedTimeRes_id"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
-        android:gravity="center"
-        android:textColor="#fff"
-        android:text="@string/or_nstart_cooking_now"
-        android:textSize="24sp" />
-
-    <Button
-        android:id="@+id/start_id"
-        android:layout_width="140dp"
-        android:layout_height="140dp"
-        android:layout_gravity="center"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:background="@drawable/btn_round"
-        android:onClick="startBtClicked"
-        android:gravity="center"
-        android:text="@string/start"
-        android:textColor="#fff"
-        android:textSize="24sp" />
-
 </LinearLayout>
 
 

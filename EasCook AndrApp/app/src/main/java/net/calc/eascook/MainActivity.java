@@ -30,11 +30,11 @@ import java.util.Calendar;
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public Toolbar toolbar;
     public int portion;
-    public int timeInSeconds;
+    public int countDownTimeInSeconds, hr_current, min_current;
     public Button timeButton;
     public TextView setTimeText, fbtxt, fbtxt2;
     public RadioGroup radioGroup;
-    public String timeString, hr, h1, mn, m1, responce;
+    public String timeString, hr, h1, mn, m1, fm ,portz, confTxt, single_portion;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
     private DatabaseReference mChildRef = mRootRef.child("FireBaseTimeValue");
@@ -43,11 +43,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     public MainActivity(){
         hr = " ";
+        fm = "Hrs";
         h1 = " ";
         mn = " ";
         m1 = " ";
+        portz=" ";
+        confTxt=" ";
         portion = 1;
-        timeInSeconds = 0;
+        countDownTimeInSeconds = 1;
+        single_portion="single";
+        fm = "Hrs";
     }
 
     public static FragmentManager fragmentManager;
@@ -103,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 String mPortion = Integer.toString(portion);
-                String t = Integer.toString(timeInSeconds);
+                String t = Integer.toString(countDownTimeInSeconds);
 
                 try {
                     mRootRef.child("FireBaseTimeValue").setValue(t);
@@ -183,24 +188,35 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public void onClicked(View view) {
         radioGroup = findViewById(R.id.radioGroup_id);
         int id = radioGroup.getCheckedRadioButtonId();
+        setTimeText = findViewById(R.id.selectedTimeRes_id);
+        String s;
 
         switch (id){
             case R.id.radioButton1:
                 portion = 1;
                 Toast.makeText(this, portion+" portion", Toast.LENGTH_SHORT).show();
+                s = "you've selected "+single_portion+" portion";
+                setTimeText.setText(s);// display message on screen
                 break;
 
             case R.id.radioButton2:
                 portion = 2;
                 Toast.makeText(this, portion+" portions", Toast.LENGTH_SHORT).show();
+                portz = "portion"; if (portion>1){portz = portz+"s";}
+                s ="you've selected "+portion+" "+portz;
+                setTimeText.setText(s);// display message on screen
                 break;
 
 
             case R.id.radioButton3:
                 portion = 3;
                 Toast.makeText(this, portion+" portions", Toast.LENGTH_SHORT).show();
+                portz = "portion"; if (portion>1){portz = portz+"s";}
+                s = "you've selected "+portion+" "+portz;
+                setTimeText.setText(s);// display message on screen
                 break;
         }
+        //setTimeText.setText(confTxt);// display message on screen
 
     }
 
@@ -213,45 +229,50 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         int h = calendar.get(Calendar.HOUR_OF_DAY);
         int m = calendar.get(Calendar.MINUTE);
 
-        TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this,
-                MainActivity.this, h, m, false);
-        timePickerDialog.show();
+        hr_current = calendar.get(Calendar.HOUR_OF_DAY);
+        min_current = calendar.get(Calendar.MINUTE);
 
+        TimePickerDialog timePickerDialog = new TimePickerDialog(MainActivity.this,
+                MainActivity.this, h, m, true);
+        timePickerDialog.show();
     }
 
     @Override // on set time method
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         setTimeText = findViewById(R.id.selectedTimeRes_id);
-        timeInSeconds = ((hourOfDay*60)+minute);
+        int mt = hourOfDay-hr_current;
+        int ht = minute- min_current;
+        countDownTimeInSeconds = ((ht*60)+mt);
         h1 = Integer.toString(hourOfDay);
         m1 = Integer.toString(minute);
-        String fm = "Hrs";
-        String portz, confTxt;
 
         // format time
-        {
-        if (hourOfDay<10){
-            hr = "0"+ h1;
-        }
-        else{
-            hr = h1;
-        }
-        if (minute<10){
+        if(countDownTimeInSeconds != 0){
+            {
+                if (hourOfDay<10){
+                    hr = "0"+ h1;
+                }
+                else{
+                    hr = h1;
+                }
+                if (minute<10){
 
-            mn = "0"+m1;
-        }
-        else{
-            mn=m1;
-        }
-        timeString = hr+":"+mn+" "+fm;}
+                    mn = "0"+m1;
+                }
+                else{
+                    mn=m1;
+                }
+                timeString = hr+":"+mn+" "+fm;
+            }
 
-        portz = "portion"; if (portion>1){portz = portz+"s";}
-        confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready at "+timeString; // create feedback message
-        //Toast.makeText(this,confTxt, Toast.LENGTH_LONG).show(); //toast message
+            confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready at "+timeString; // create feedback message
 
+        }
+        else {
+            confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready in 40 minutes"; // create feedback message
+
+        }
         setTimeText.setText(confTxt);// display message on screen
-        //sendAmountData();
-
     }
 
     public void startBtClicked(View view) {
