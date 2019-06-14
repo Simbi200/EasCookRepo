@@ -1,6 +1,7 @@
 package net.calc.eascook;
 
 import android.app.TimePickerDialog;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -16,36 +17,50 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import java.util.Calendar;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public Toolbar toolbar;
-    public int portion = 1;
+    public int portion;
     public int timeInSeconds;
     public Button timeButton;
-    public TextView setTimeText;
+    public TextView setTimeText, fbtxt;
     public RadioGroup radioGroup;
-    public String timeString;
-    String hr = " ";
-    String h1 = " ";
-    String mn = " ";
-    String m1 = " ";
+    public String timeString, hr, h1, mn, m1;
+    private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference mRootRef = firebaseDatabase.getReference();
+    private DatabaseReference mChildRef = mRootRef.child("message");
 
+
+    public MainActivity(){
+        hr = " ";
+        h1 = " ";
+        mn = " ";
+        m1 = " ";
+        portion = 1;
+        timeInSeconds = 0;
+    }
 
     public static FragmentManager fragmentManager;
 
-    @Override
+    @Override //on create
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        fbtxt = findViewById(R.id.fbtxt_id);
         toolbar = findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("EasCook");
         toolbar.setLogo(R.drawable.logo);
         fragmentManager = getSupportFragmentManager();
-        setTimeText = findViewById(R.id.selectedTimeRes_id);
+        //setTimeText = findViewById(R.id.selectedTimeRes_id);
 
 
 
@@ -63,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
 
         //add second fragment
+        {/*
         if(findViewById(R.id.frag_container_id_2)!=null){
             if(savedInstanceState!=null){
                 return;
@@ -72,8 +88,28 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             DownFragment downFragment = new DownFragment();
             fragmentTransaction.add(R.id.frag_container_id_2,downFragment,null);
             fragmentTransaction.commit();
+        }*/
         }
 
+    }
+
+    protected void onStart() {
+
+        super.onStart();
+        mChildRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                String message = dataSnapshot.getValue(String.class);
+                fbtxt.setText(message);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
     }
 
     @Override
@@ -98,7 +134,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         }
         return true;
     }
-
 
     // onClick methods for radio buttons
     public void onClicked(View view) {
@@ -125,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     }
 
+    // onClick method for set time button
     public void btClicked(View view) {
         timeButton = findViewById(R.id.timeButton_id);
 
@@ -139,13 +175,17 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
     }
 
-    @Override
+    @Override // on set time method
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        setTimeText = findViewById(R.id.selectedTimeRes_id);
         timeInSeconds = ((hourOfDay*60)+minute);
         h1 = Integer.toString(hourOfDay);
         m1 = Integer.toString(minute);
-
         String fm = "Hrs";
+        String portz, confTxt;
+
+        // format time
+        {
         if (hourOfDay<10){
             hr = "0"+ h1;
         }
@@ -159,14 +199,13 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         else{
             mn=m1;
         }
-        timeString = hr+":"+mn+" "+fm;
-        String portz = "portion"; if (portion>1){portz = portz+"s";}
+        timeString = hr+":"+mn+" "+fm;}
 
-        String confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready at "+timeString;
+        portz = "portion"; if (portion>1){portz = portz+"s";}
+        confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready at "+timeString; // create feedback message
+        Toast.makeText(this,confTxt, Toast.LENGTH_LONG).show(); //toast message
 
-        Toast.makeText(this,confTxt, Toast.LENGTH_LONG).show();
-
-        //setTimeText.setText(confTxt);
+        setTimeText.setText(confTxt);// display message on screen
 
     }
 }
