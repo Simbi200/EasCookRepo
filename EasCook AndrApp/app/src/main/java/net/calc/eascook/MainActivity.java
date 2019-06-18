@@ -28,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.Calendar;
+import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         responce = "";
         pTimerInt = 0;
         resPOns = "";
-        countDownTimeInSeconds = 1;
+        countDownTimeInSeconds = 0;
         single_portion = "single";
         fm = "Hrs";
     }
@@ -218,42 +219,47 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override // on set time method
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         setTimeText = findViewById(R.id.selectedTimeRes_id);
-        int mt = hourOfDay - hr_current;
-        int ht = minute - min_current;
-        countDownTimeInSeconds = (((ht * 60) + mt) - 2400);
+        int ht = hourOfDay;
+        int mt = minute;
+        int currentTinSec = ((hr_current * 3600) + min_current * 60);
+        int selectedInSec = ((ht * 3600) + mt * 60);
         h1 = Integer.toString(hourOfDay);
         m1 = Integer.toString(minute);
 
-        // format time
-        if (countDownTimeInSeconds != 0) {
-            {
-                if (hourOfDay < 10) {
-                    hr = "0" + h1;
-                } else {
-                    hr = h1;
-                }
-                if (minute < 10) {
-
-                    mn = "0" + m1;
-                } else {
-                    mn = m1;
-                }
-                timeString = hr + ":" + mn + " " + fm;
-            }
-            if((countDownTimeInSeconds + 2400) <0){timeString = timeString + " tomorrow";
-            countDownTimeInSeconds = countDownTimeInSeconds* (-1) +2400;}
-            confTxt = "you have selected " + portion + " " + portz + " of rice\nit'll be ready at " + timeString; // create feedback message
-
+        // calculate countdown seconds
+        if (selectedInSec == currentTinSec) {
+            countDownTimeInSeconds = 0;
+        } else if (selectedInSec > currentTinSec) {
+            countDownTimeInSeconds = selectedInSec;
         } else {
+            countDownTimeInSeconds = (86400 - currentTinSec) + selectedInSec;
+        }
+
+        // format time for display
+        if (hourOfDay < 10) {
+            hr = "0" + h1;
+        } else {
+            hr = h1;
+        }
+        if (minute < 10) {
+
+            mn = "0" + m1;
+        } else {
+            mn = m1;
+        }
+        timeString = hr + ":" + mn + " " + fm;
+        if (countDownTimeInSeconds == 0) {
             confTxt = "you have selected " + portion + " " + portz + " of rice\nit'll be ready in 40 minutes"; // create feedback message
 
+        } else {
+            confTxt = "you have selected " + portion + " " + portz + " of rice\nit'll be ready at " + timeString; // create feedback message
         }
         setTimeText.setText(confTxt);// display message on screen
     }
 
+
     public void startBtClicked(View view) {
         responce = "";
-        //progressDialog = ProgressDialog.show(this, "Waiting for EasCooker", "Please wait...", true);
         sendAmountData();
         //add second fragment
         {
