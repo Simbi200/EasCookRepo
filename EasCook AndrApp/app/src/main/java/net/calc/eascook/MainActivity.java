@@ -1,6 +1,8 @@
 package net.calc.eascook;
 
+import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -13,6 +15,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -29,29 +32,32 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
     public Toolbar toolbar;
-    public int portion;
+    public int portion, pTimerInt;
     public int countDownTimeInSeconds, hr_current, min_current;
     public Button timeButton;
-    public TextView setTimeText, fbtxt, fbtxt2;
+    public TextView setTimeText, feedBack, fbtxt2;
     public RadioGroup radioGroup;
-    public String timeString, hr, h1, mn, m1, fm ,portz, confTxt, single_portion;
+    public String timeString, hr, h1, mn, m1, fm, portz, confTxt, single_portion, responce, resPOns;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
-    private DatabaseReference mChildRef = mRootRef.child("FireBaseTimeValue");
-    private DatabaseReference mChildRef2 = mRootRef.child("FireBasePortionValue");
+    private DatabaseReference mChildFeedback = mRootRef.child("feedback");
+    private DatabaseReference mChildRef2 = mRootRef.child("num2");
 
 
-    public MainActivity(){
+    public MainActivity() {
         hr = " ";
         fm = "Hrs";
         h1 = " ";
         mn = " ";
         m1 = " ";
-        portz=" ";
-        confTxt=" ";
+        portz = " ";
+        confTxt = " ";
         portion = 1;
+        responce = "";
+        pTimerInt = 0;
+        resPOns = "";
         countDownTimeInSeconds = 1;
-        single_portion="single";
+        single_portion = "single";
         fm = "Hrs";
     }
 
@@ -62,40 +68,24 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fbtxt = findViewById(R.id.fbtxt_id);
-        fbtxt2 = findViewById(R.id.fbtxt2_id);
+        feedBack = findViewById(R.id.feedBack_id);
         toolbar = findViewById(R.id.action_bar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("EasCook");
         toolbar.setLogo(R.drawable.logo);
         fragmentManager = getSupportFragmentManager();
-        //setTimeText = findViewById(R.id.selectedTimeRes_id);
 
 
         //add first fragment
-        if(findViewById(R.id.frag_container_id_1)!=null){
-            if(savedInstanceState!=null){
+        if (findViewById(R.id.frag_container_id_1) != null) {
+            if (savedInstanceState != null) {
                 return;
             }
 
             FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
             UpFragment upFragment = new UpFragment();
-            fragmentTransaction.add(R.id.frag_container_id_1,upFragment,null);
+            fragmentTransaction.add(R.id.frag_container_id_1, upFragment, null);
             fragmentTransaction.commit();
-        }
-
-        //add second fragment
-        {/*
-        if(findViewById(R.id.frag_container_id_2)!=null){
-            if(savedInstanceState!=null){
-                return;
-            }
-
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            DownFragment downFragment = new DownFragment();
-            fragmentTransaction.add(R.id.frag_container_id_2,downFragment,null);
-            fragmentTransaction.commit();
-        }*/
         }
 
 
@@ -107,21 +97,31 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
-                String mPortion = Integer.toString(portion);
-                String t = Integer.toString(countDownTimeInSeconds);
+                try {
+                    mRootRef.child("time").setValue(countDownTimeInSeconds);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    mRootRef.child("portion").setValue(portion);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                try {
+                    mRootRef.child("session").setValue(1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 try {
-                    mRootRef.child("FireBaseTimeValue").setValue(t);
+                    mRootRef.child("feedback").setValue("Wait... \ncooking will in a moment");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                try {
-                    mRootRef.child("FireBasePortionValue").setValue(mPortion);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
 
             }
+
             @Override
             public void onCancelled(DatabaseError databaseError) {
                 Log.d("User", databaseError.getMessage());
@@ -132,54 +132,28 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     protected void onStart() {
 
         super.onStart();
-        mChildRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                String message = dataSnapshot.getValue(String.class);
-                fbtxt.setText(message);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
-
-        mChildRef2.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-
-                String message = dataSnapshot.getValue(String.class);
-                fbtxt2.setText(message);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError databaseError) {
-
-            }
-        });
     }
 
     @Override
     //create action bar
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_main,menu);
+        inflater.inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     // onClick listeners for menu items
-    public boolean onOptionsItemSelected(MenuItem menuItem){
-        switch (menuItem.getItemId()){
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
             case R.id.exit_id:
                 finish();
                 System.exit(0);
                 return true;
 
             case R.id.help_id:
-                Toast.makeText(getApplicationContext(),"this will show help", Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(), "this will show help", Toast.LENGTH_LONG).show();
         }
         return true;
     }
@@ -191,33 +165,37 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         setTimeText = findViewById(R.id.selectedTimeRes_id);
         String s;
 
-        switch (id){
+        switch (id) {
             case R.id.radioButton1:
                 portion = 1;
-                Toast.makeText(this, portion+" portion", Toast.LENGTH_SHORT).show();
-                s = "you've selected "+single_portion+" portion";
+                Toast.makeText(this, portion + " portion", Toast.LENGTH_SHORT).show();
+                s = "you've selected " + single_portion + " portion";
                 setTimeText.setText(s);// display message on screen
                 break;
 
             case R.id.radioButton2:
                 portion = 2;
-                Toast.makeText(this, portion+" portions", Toast.LENGTH_SHORT).show();
-                portz = "portion"; if (portion>1){portz = portz+"s";}
-                s ="you've selected "+portion+" "+portz;
+                Toast.makeText(this, portion + " portions", Toast.LENGTH_SHORT).show();
+                portz = "portion";
+                if (portion > 1) {
+                    portz = portz + "s";
+                }
+                s = "you've selected " + portion + " " + portz;
                 setTimeText.setText(s);// display message on screen
                 break;
 
-
             case R.id.radioButton3:
                 portion = 3;
-                Toast.makeText(this, portion+" portions", Toast.LENGTH_SHORT).show();
-                portz = "portion"; if (portion>1){portz = portz+"s";}
-                s = "you've selected "+portion+" "+portz;
+                Toast.makeText(this, portion + " portions", Toast.LENGTH_SHORT).show();
+                portz = "portion";
+                if (portion > 1) {
+                    portz = portz + "s";
+                }
+                s = "you've selected " + portion + " " + portz;
                 setTimeText.setText(s);// display message on screen
                 break;
         }
         //setTimeText.setText(confTxt);// display message on screen
-
     }
 
     // onClick method for set time button
@@ -240,42 +218,50 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     @Override // on set time method
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         setTimeText = findViewById(R.id.selectedTimeRes_id);
-        int mt = hourOfDay-hr_current;
-        int ht = minute- min_current;
-        countDownTimeInSeconds = ((ht*60)+mt);
+        int mt = hourOfDay - hr_current;
+        int ht = minute - min_current;
+        countDownTimeInSeconds = (((ht * 60) + mt) - 2400);
         h1 = Integer.toString(hourOfDay);
         m1 = Integer.toString(minute);
 
         // format time
-        if(countDownTimeInSeconds != 0){
+        if (countDownTimeInSeconds != 0) {
             {
-                if (hourOfDay<10){
-                    hr = "0"+ h1;
-                }
-                else{
+                if (hourOfDay < 10) {
+                    hr = "0" + h1;
+                } else {
                     hr = h1;
                 }
-                if (minute<10){
+                if (minute < 10) {
 
-                    mn = "0"+m1;
+                    mn = "0" + m1;
+                } else {
+                    mn = m1;
                 }
-                else{
-                    mn=m1;
-                }
-                timeString = hr+":"+mn+" "+fm;
+                timeString = hr + ":" + mn + " " + fm;
             }
+            if((countDownTimeInSeconds + 2400) <0){timeString = timeString + " tomorrow";
+            countDownTimeInSeconds = countDownTimeInSeconds* (-1) +2400;}
+            confTxt = "you have selected " + portion + " " + portz + " of rice\nit'll be ready at " + timeString; // create feedback message
 
-            confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready at "+timeString; // create feedback message
-
-        }
-        else {
-            confTxt = "you have selected "+portion+" "+portz+" of rice\nit'll be ready in 40 minutes"; // create feedback message
+        } else {
+            confTxt = "you have selected " + portion + " " + portz + " of rice\nit'll be ready in 40 minutes"; // create feedback message
 
         }
         setTimeText.setText(confTxt);// display message on screen
     }
 
     public void startBtClicked(View view) {
+        responce = "";
+        //progressDialog = ProgressDialog.show(this, "Waiting for EasCooker", "Please wait...", true);
         sendAmountData();
+        //add second fragment
+        {
+            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+            DownFragment downFragment = new DownFragment();
+            fragmentTransaction.replace(R.id.frag_container_id_1, downFragment, null);
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }
     }
 }
