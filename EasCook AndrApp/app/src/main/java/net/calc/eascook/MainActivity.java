@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -35,14 +37,14 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public Toolbar toolbar;
     public int portion, pTimerInt;
     public int countDownTimeInSeconds, hr_current, min_current;
-    public Button timeButton;
+    public Button timeButton, startBTN;
     public TextView setTimeText, feedBack, fbtxt2;
     public RadioGroup radioGroup;
     public String timeString, hr, h1, mn, m1, fm, portz, confTxt, single_portion, responce, resPOns;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
     private DatabaseReference mChildFeedback = mRootRef.child("feedback");
-    private DatabaseReference mChildRef2 = mRootRef.child("num2");
+    //private DatabaseReference mChildRef2 = mRootRef.child("num2");
 
 
     public MainActivity() {
@@ -71,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         feedBack = findViewById(R.id.feedBack_id);
         toolbar = findViewById(R.id.action_bar);
+        startBTN = findViewById(R.id.start_id);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("EasCook");
         toolbar.setLogo(R.drawable.logo);
@@ -257,17 +260,16 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         setTimeText.setText(confTxt);// display message on screen
     }
 
-
     public void startBtClicked(View view) {
         responce = "";
+
         sendAmountData();
         //add second fragment
-        {
-            FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-            DownFragment downFragment = new DownFragment();
-            fragmentTransaction.replace(R.id.frag_container_id_1, downFragment, null);
-            fragmentTransaction.addToBackStack(null);
-            fragmentTransaction.commit();
-        }
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        DownFragment downFragment = new DownFragment();
+        fragmentTransaction.replace(R.id.frag_container_id_1, downFragment, null);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
     }
 }
