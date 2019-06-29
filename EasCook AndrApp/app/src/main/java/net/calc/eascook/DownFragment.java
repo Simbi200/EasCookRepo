@@ -1,15 +1,10 @@
 package net.calc.eascook;
 
-
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.text.format.Time;
-import android.view.LayoutInflater;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.firebase.database.DataSnapshot;
@@ -18,16 +13,20 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class DownFragment extends Fragment {
+    Button cancelButton;
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
     private DatabaseReference mChildFeedback = mRootRef.child("feedback");
-    private DatabaseReference mDoneChild = mRootRef.child("session");
 
 
     public TextView feedBack;
@@ -43,8 +42,9 @@ public class DownFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_down, container, false);
-
         feedBack = view.findViewById(R.id.feedBack_id);
+
+
         return view;
     }
 

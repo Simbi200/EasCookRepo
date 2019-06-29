@@ -1,9 +1,6 @@
 package net.calc.eascook;
 
-import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
-import android.os.CountDownTimer;
-import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
@@ -14,23 +11,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
 import java.util.Calendar;
-import java.util.concurrent.TimeUnit;
 
 
 public class MainActivity extends AppCompatActivity implements TimePickerDialog.OnTimeSetListener {
@@ -40,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     public Button timeButton, startBTN;
     public TextView setTimeText, feedBack, fbtxt2;
     public RadioGroup radioGroup;
-    public String timeString, hr, h1, mn, m1, fm, portz, confTxt, single_portion, responce, resPOns;
+    public String timeString, hr, h1, mn, m1, fm, portz, confTxt, single_portion, resPOns;
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
     private DatabaseReference mChildFeedback = mRootRef.child("feedback");
@@ -56,7 +47,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         portz = " ";
         confTxt = " ";
         portion = 1;
-        responce = "";
+
         pTimerInt = 0;
         resPOns = "";
         countDownTimeInSeconds = 0;
@@ -73,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
 
         feedBack = findViewById(R.id.feedBack_id);
         toolbar = findViewById(R.id.action_bar);
-        startBTN = findViewById(R.id.start_id);
+        startBTN = findViewById(R.id.start_id2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("EasCook");
         toolbar.setLogo(R.drawable.logo);
@@ -91,8 +82,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
             fragmentTransaction.add(R.id.frag_container_id_1, upFragment, null);
             fragmentTransaction.commit();
         }
-
-
     }
 
     private void sendAmountData() {
@@ -113,6 +102,11 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 }
                 try {
                     mRootRef.child("session").setValue(1);
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                } try {
+                    mRootRef.child("interapt").setValue("OK");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -261,15 +255,46 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
 
     public void startBtClicked(View view) {
-        responce = "";
 
         sendAmountData();
-        //add second fragment
 
+        //add second fragment
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         DownFragment downFragment = new DownFragment();
         fragmentTransaction.replace(R.id.frag_container_id_1, downFragment, null);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
+    public void cancelButtonClicked(View view) {
+
+
+        mRootRef.child("myDb").child("awais@gmailcom").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                try {
+                    mRootRef.child("interapt").setValue("cancel");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.d("User", databaseError.getMessage());
+            }
+        });
+        Toast.makeText(this,
+                "Cooking Cancelled", Toast.LENGTH_LONG).show();
+
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        UpFragment upFragment = new UpFragment();
+        fragmentTransaction.replace(R.id.frag_container_id_1, upFragment, null);
+        //fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+
 }

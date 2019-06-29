@@ -19,8 +19,9 @@
     <string name="two">Two</string>
     <string name="one">One</string>
     <string name="select_portions_of_rice">Select portions of rice</string>
-    <string name="change_amount_of_rice_or_time_for_rice_to_be_ready">change amount of rice or time for rice to be ready</string>
-    <string name="you_can_cancel_the_cooking_session">you can cancel the cooking session</string>
+    <string name="change_amount_of_rice_or_time_for_rice_to_be_ready">change amount of rice or time</string>
+    <string name="you_can_cancel_the_cooking_session">Cancel cooking session</string>
+    <string name="change">Change</string>
 
 
 </resources>
