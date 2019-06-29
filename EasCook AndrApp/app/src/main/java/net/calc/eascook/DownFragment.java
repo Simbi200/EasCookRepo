@@ -22,7 +22,7 @@ import android.view.ViewGroup;
  * A simple {@link Fragment} subclass.
  */
 public class DownFragment extends Fragment {
-    Button cancelButton;
+
 
     private FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference mRootRef = firebaseDatabase.getReference();
