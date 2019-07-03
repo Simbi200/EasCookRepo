@@ -99,7 +99,7 @@
                 android:layout_marginEnd="20dp"
                 android:layout_weight="1"
                 android:background="@drawable/btn_round"
-                android:onClick="changeTimePort"
+                android:onClick="chaneValuz"
                 android:text="@string/change"
                 android:textColor="#fff" />
 

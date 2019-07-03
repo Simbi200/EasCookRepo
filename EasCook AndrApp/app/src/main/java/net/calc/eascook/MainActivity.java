@@ -297,4 +297,9 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
     }
 
 
+    public void chaneValuz(View view) {
+
+
+
+    }
 }

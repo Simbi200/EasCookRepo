@@ -1,11 +1,7 @@
 # Import Libraries
 import pyrebase
-
 import RPi.GPIO as GPIO
-
-import time
-
-  
+import time  
 
 # Firebase Configuration
 config = {
@@ -18,16 +14,12 @@ config = {
 
 firebase = pyrebase.initialize_app(config)
 
-
 auth = firebase.auth()
 #authenticate a user
 user = auth.sign_in_with_email_and_password("esc-69-14@cc.ac.mw", "ab123456")
 
 # Firebase Database Intialization
 db = firebase.database()
-
-
-
 
 GPIO.setmode(GPIO.BCM)
 
@@ -67,47 +59,37 @@ def cook():
   print ("cooking")
   time.sleep(5)#2400
   GPIO.output(17,False)
-  print ("done...")
-    
+  print ("done...")    
   
 
 #puts ingredients
 def pourIngredients():
-  global portions, wait, oilDelay, waterDelay, riceDelay
-  
-  
+  global portions, wait, oilDelay, waterDelay, riceDelay  
   
     #puts rice
   time.sleep(1)
   GPIO.output(27,True)
   print ("putting rice")
   time.sleep(riceDelay)
-  GPIO.output(27,False)
-  
+  GPIO.output(27,False)  
   
   #puts water
   GPIO.output(4,True)
   print ("putting water")
   time.sleep(waterDelay)
   GPIO.output(4,False)
-
   
   #puts oil
   time.sleep(1)
   GPIO.output(4,True)
   print ("putting oil")
   time.sleep(oilDelay)
-  GPIO.output(4,False)
-  
+  GPIO.output(4,False)  
 
-while(True):
-    
-    #GPIO.cleanup()
-    
+while(True):   
     ses = db.child("session").get(user['idToken']).val()
     print("waiting...")    
-    time.sleep(0.5)
-    
+    time.sleep(0.5)    
     
     if (ses==1):
         

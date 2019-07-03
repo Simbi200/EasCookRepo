@@ -59,6 +59,8 @@ public class DownFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
                 String message = dataSnapshot.getValue(String.class);
+
+
                 feedBack.setText(message);
             }
 
