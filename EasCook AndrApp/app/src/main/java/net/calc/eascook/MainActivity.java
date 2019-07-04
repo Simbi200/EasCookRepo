@@ -47,7 +47,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         portz = " ";
         confTxt = " ";
         portion = 1;
-
         pTimerInt = 0;
         resPOns = "";
         countDownTimeInSeconds = 0;
@@ -278,7 +277,6 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
             }
 
             @Override
@@ -296,10 +294,4 @@ public class MainActivity extends AppCompatActivity implements TimePickerDialog.
         fragmentTransaction.commit();
     }
 
-
-    public void chaneValuz(View view) {
-
-
-
-    }
 }
